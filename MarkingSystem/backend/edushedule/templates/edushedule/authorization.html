@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Authorization</title>
+	<style>
+		body {
+			background-color: #f7f7f7;
+			font-family: Arial, sans-serif;
+		}
+		.container {
+			margin: 0 auto;
+			width: 400px;
+			background-color: #8a2be2;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0,0,0,0.3);
+			padding: 20px;
+			margin-top: 50px;
+		}
+		.container h1 {
+			font-size: 2rem;
+			text-align: center;
+			margin-bottom: 20px;
+			color: #fff;
+			text-shadow: 2px 2px #333;
+		}
+		form {
+			display: flex;
+			flex-direction: column;
+		}
+		label {
+			font-size: 1.2rem;
+			margin-bottom: 5px;
+			color: #fff;
+			text-shadow: 1px 1px #333;
+		}
+		input[type="text"],
+		input[type="password"] {
+			padding: 10px;
+			border-radius: 5px;
+			border: none;
+			background-color: #fff;
+			margin-bottom: 20px;
+			font-size: 1.2rem;
+		}
+		button[type="submit"] {
+			background-color: #6a1b9a;
+			color: #fff;
+			padding: 10px;
+			border-radius: 5px;
+			border: none;
+			font-size: 1.2rem;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+			text-shadow: 1px 1px #333;
+		}
+		button[type="submit"]:hover {
+			background-color: #4a148c;
+		}
+		.error-message {
+			color: red;
+			margin-top: 10px;
+			font-size: 1.2rem;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Вход</h1>
+		<form action="/mainpage">
+			<label for="username">Имя пользователя:</label>
+			<input type="text" id="username" name="username">
+			<label for="password">Пароль:</label>
+			<input type="password" id="password" name="password">
+			<button type="submit">Войти</button>
+			<div class="error-message"></div>
+		</form>
+	</div>
+</body>
+</html>
