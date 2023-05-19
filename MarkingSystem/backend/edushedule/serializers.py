@@ -40,7 +40,7 @@ class UserAuthorizationSerializer(serializers.Serializer):
         password = data['password']
         user = authenticate(login=login, password=password)
 
-        if user is None or user.status == 'student':
+        if user is None:
             raise serializers.ValidationError("Invalid login credentials")
         try:
             refresh = RefreshToken.for_user(user)
