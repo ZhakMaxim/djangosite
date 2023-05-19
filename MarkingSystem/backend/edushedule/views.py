@@ -98,16 +98,31 @@ class StudentMarkDetailView(APIView):
         return Response()
 
     def post(self, request, *args, **kwargs):
-        serializer = MarkSerializer(data=request.data)
+        serializer = MarkSerializer(data=request.data, many=isinstance(request.data, list))
         serializer.is_valid(raise_exception=True)
         student_id = self.kwargs.get('pk')
-        mark_value = request.POST.get('value')
-        mark_subject = request.POST.get('subject')
-        mark = Mark(value=mark_value, subject=mark_subject)
-        mark.save()
-        student = get_object_or_404(Student, id=student_id)
-        student.marks.add(mark)
+
+        if isinstance(request.data, list):
+            marks = []
+            for mark_data in request.data:
+                mark_value = mark_data.get('value')
+                mark_subject = mark_data.get('subject')
+                mark = Mark(value=mark_value, subject=mark_subject)
+                mark.save()
+                marks.append(mark)
+
+            student = get_object_or_404(Student, id=student_id)
+            student.marks.add(*marks)
+        else:
+            mark_value = request.data.get('value')
+            mark_subject = request.data.get('subject')
+            mark = Mark(value=mark_value, subject=mark_subject)
+            mark.save()
+            student = get_object_or_404(Student, id=student_id)
+            student.marks.add(mark)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentListSerializer

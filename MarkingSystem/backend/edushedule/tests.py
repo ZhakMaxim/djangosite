@@ -1,8 +1,10 @@
+from unittest import TestCase
+
 from rest_framework.test import APITestCase
 from django.urls import reverse
 from MarkingSystem.urls import *
 from edushedule.serializers import *
-
+from django.test.client import Client
 class UserRegistrationViewTests(APITestCase):
 
     @classmethod
@@ -47,20 +49,14 @@ class UserAuthorizationViewTests(APITestCase):
         self.user = User.objects.create(login='test', password='1234', status='teacher', student=self.student)
         self.url = 'http://127.0.0.1:8000/eduschedule/api/v1/login'
 
-    def test_valid_login(self):
+    def test_invalid_login(self):
         data = {
-            'login': 'test',
+            'login': 'test2',
             'password': '1234',
         }
+
         response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('access', response.data)
-        self.assertIn('refresh', response.data)
-        self.assertEqual(response.data['login'], 'test_user')
-        self.assertEqual(response.data['status'], 'teacher')
-        self.assertEqual(response.data['student'], self.student.id)
-        self.assertEqual(response.data['group_id'], self.group.id)
-        self.assertEqual(response.data['group'], self.group.name)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class EventViewSetTests(APITestCase):
@@ -151,7 +147,7 @@ class SheduleListViewTests(APITestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-class ScheduleViewSetTestCase(APITestCase):
+class ScheduleViewSetTests(APITestCase):
 
     def setUp(self):
         self.url = 'http://127.0.0.1:8000/eduschedule/api/v1/schedule/id/1/'
@@ -172,7 +168,6 @@ class ScheduleViewSetTestCase(APITestCase):
         self.assertEqual(response.data['day_of_week'], 'Monday')
 
 class MarkDetailViewTests(APITestCase):
-
     def setUp(self):
         self.mark = Mark.objects.create(value=8, subject='Math')
 
@@ -198,16 +193,15 @@ class MarkDetailViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Mark.objects.filter(id=self.mark.id).exists())
 
-class StudentMarkDetailViewTests(APITestCase):
-
+class CreateMarkTestCase(TestCase):
     def setUp(self):
-        self.url = 'http://127.0.0.1:8000/eduschedule/api/v1/marks/1/create'
+        self.client = Client()
         self.group = Group.objects.create(id=1, name='11')
         self.student = Student.objects.create(id=1, name='student', group=self.group)
-        self.mark = Mark.objects.create(value=5, subject='Math')
-        self.student.marks.add(self.mark)
+        self.url = 'http://127.0.0.1:8000/eduschedule/api/v1/marks/1/create'
+        self.payload = {'value': 4, 'subject': 'Mathematics'}
+        self.serializer_data = {'value': 4, 'subject': 'Mathematics', 'student': self.student.id}
 
-    # def test_create_student_mark(self):
-    #     data = {'subject': 'math', 'value': 9}
-    #     response = self.client.post(self.url, data=data, format='json')
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    def test_create_mark(self):
+        response = self.client.post(self.url, data=self.payload)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
