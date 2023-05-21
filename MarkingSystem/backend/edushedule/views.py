@@ -9,8 +9,7 @@ from .models import *
 
 class UserRegistrationView(APIView):
     serializer_class = UserRegistrationSerializer
-    permission_classes = (AllowAny,)
-
+    permission_classes = (IsAuthenticated,)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         valid = serializer.is_valid(raise_exception=True)
@@ -49,7 +48,7 @@ class UserAuthorizationView(APIView):
 
 class UserListView(APIView):
     serializer_class = UserListSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         users = User.objects.all()
@@ -63,11 +62,11 @@ class UserListView(APIView):
 class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventListSerializer
     queryset = Event.objects.all()
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
 
 class EventPhotoView(View):
-
+    permission_classes = (IsAuthenticated,)
     def get(self, request, event_id):
         try:
             event = Event.objects.get(id=event_id)
@@ -83,7 +82,7 @@ class EventPhotoView(View):
 
 class StudentListView(APIView):
     serializer_class = StudentListSerializer
-    # queryset = Student.objects.all()
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         queryset = Student.objects.all()
@@ -97,6 +96,7 @@ class StudentListView(APIView):
 class StudentMarksListView(viewsets.ModelViewSet):
     serializer_class = StudentListSerializer
     queryset = Student.objects.all()
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -110,6 +110,7 @@ class StudentMarksListView(viewsets.ModelViewSet):
 class StudentMarkDetailView(APIView):
     serializer_class = MarkSerializer
     queryset = Mark.objects.all()
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         return Response()
@@ -144,15 +145,18 @@ class StudentMarkDetailView(APIView):
 class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentListSerializer
     queryset = Student.objects.all()
+    permission_classes = (IsAuthenticated,)
 
 class MarkDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Mark.objects.all()
     serializer_class = MarkSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class ScheduleListView(viewsets.ModelViewSet):
     queryset = Schedule.objects.all()
     serializer_class = SсheduleSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -166,3 +170,4 @@ class ScheduleListView(viewsets.ModelViewSet):
 class ScheduleViewSet(viewsets.ModelViewSet):
     serializer_class = SсheduleSerializer
     queryset = Schedule.objects.all()
+    permission_classes = (IsAuthenticated,)
