@@ -67,6 +67,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
 
 class EventPhotoView(View):
+
     def get(self, request, event_id):
         try:
             event = Event.objects.get(id=event_id)
@@ -76,7 +77,6 @@ class EventPhotoView(View):
         if not event.photo:
             return HttpResponseBadRequest("Event photo does not exist")
 
-        # Открываем файл с фотографией события и возвращаем его содержимое
         with open(event.photo.path, 'rb') as photo_file:
             return HttpResponse(photo_file.read(), content_type='image/jpeg')
 

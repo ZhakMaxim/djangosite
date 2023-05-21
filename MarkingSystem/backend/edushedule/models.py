@@ -15,6 +15,19 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def create_superuser(self, login, password, **kwargs):
+        user = self.model(
+            login=login,
+            password=password,
+        )
+        user.status = 'admin'
+        user.is_superuser = 1
+        user.is_staff = 1
+        user.student_id = 1
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
 class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         app_label = 'edushedule'
@@ -25,7 +38,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         ("student", "ученик"),
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    student = models.ForeignKey('Student', on_delete=models.DO_NOTHING)
+    student = models.ForeignKey('Student', on_delete=models.DO_NOTHING, default=None)
+    is_staff = models.BooleanField(default=0)
 
     objects = UserManager()
 
