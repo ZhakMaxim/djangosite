@@ -11,6 +11,7 @@ class UserManager(BaseUserManager):
             status=status,
         )
 
+
         user.set_password(password)
         user.save(using=self._db)
         return user
