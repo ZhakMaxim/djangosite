@@ -31,6 +31,7 @@ urlpatterns = [
     path('eduschedule/api/v1/login', UserAuthorizationView.as_view(), name='login'),
     # path('eduschedule/users', UserListView.as_view(), name='users'),
     path('eduschedule/api/v1/', include(router.urls), name='events'),
+    path('eduschedule/api/v1/events/photo/<int:event_id>/', EventPhotoView.as_view(), name='event-photo'),
     path('eduschedule/api/v1/students', StudentListView.as_view()),
     path('eduschedule/api/v1/students/<int:pk>/', StudentMarksListView.as_view({'get': 'list'})),
     # path('eduschedule/api/v1/students/<int:pk>', StudentMarkDetailView.as_view()),

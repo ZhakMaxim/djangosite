@@ -1,3 +1,4 @@
+from django.http import HttpResponseBadRequest, HttpResponse
 from rest_framework import viewsets, generics
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -63,6 +64,22 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventListSerializer
     queryset = Event.objects.all()
     #permission_classes = (IsAuthenticated,)
+
+
+class EventPhotoView(View):
+    def get(self, request, event_id):
+        try:
+            event = Event.objects.get(id=event_id)
+        except Event.DoesNotExist:
+            return HttpResponseBadRequest("Event does not exist")
+
+        if not event.photo:
+            return HttpResponseBadRequest("Event photo does not exist")
+
+        # Открываем файл с фотографией события и возвращаем его содержимое
+        with open(event.photo.path, 'rb') as photo_file:
+            return HttpResponse(photo_file.read(), content_type='image/jpeg')
+
 
 class StudentListView(APIView):
     serializer_class = StudentListSerializer
